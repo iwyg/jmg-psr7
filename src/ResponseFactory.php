@@ -51,7 +51,7 @@ class ResponseFactory
         $version = $request->getProtocolVersion();
         $etag    = $request->getHeaderLine('if-none-match');
 
-        list($lastMod, $mod, $modDate) = $this->getModTimes($request, $resource);
+        list($time, $lastMod, $mod, $modDate) = $this->getModTimes($request, $resource);
         $headers = $this->getDefaultHeaders($lastMod, $resource->getHash());
 
         if (0 === strcmp($etag, $headers['etag']) ||
@@ -80,6 +80,7 @@ class ResponseFactory
     {
         $time = time();
         return [
+            $time,
             (new DateTime)->setTimestamp($modDate = $resource->getLastModified()),
             strtotime($request->getHeaderLine('if-modified-since')) ?: $time,
             $modDate
