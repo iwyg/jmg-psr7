@@ -58,8 +58,9 @@ class ResponseFactory
             // not modified response
             (($resource instanceof CachedResourceInterface &&
             $resource->isFresh($time)) && $mod === $modDate)) {
-            $response = new NotModifiedImageResonse($resource, [], $version);
-            $response = $response->withHeader('last-modified', $headers['last-modified']);
+            $response = (new NotModifiedImageResonse($resource, [], $version))
+                ->withHeader('content-type', $resource->getMimeType());
+            //$response = $response->withHeader('last-modified', $headers['last-modified']);
         } else {
             // normal response
             $response = new ImageResponse($resource, $headers, $version);

@@ -22,6 +22,9 @@ use Thapp\Jmg\Resource\ImageResourceInterface;
  */
 class NotModifiedImageResonse extends ImageResponse
 {
+    /** @var array */
+    const STATUS = [304 => 'Not Modified'];
+
     /** @var Psr\Http\Message\StreamInterface */
     private $body;
 
@@ -31,12 +34,21 @@ class NotModifiedImageResonse extends ImageResponse
         'content-lenght', 'content-type'
     ];
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReasonPhrase()
+    {
+        return self::STATUS[$this->getStatusCode()];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getStatusCode()
     {
-        return 304;
+        return key(self::STATUS);
     }
 
     /**
