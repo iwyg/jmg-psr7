@@ -23,7 +23,7 @@ use Thapp\Jmg\Resource\CachedResourceInterface;
  * @version $Id$
  * @author iwyg <mail@thomas-appel.com>
  */
-class ResponseFactory
+class ResponseFactory implements ImageResponseFactoryInterface
 {
     /** @var bool */
     private $useXsend;
@@ -39,12 +39,7 @@ class ResponseFactory
     }
 
     /**
-     * getResponse
-     *
-     * @param MessageInterface $request
-     * @param ResourceInterface $resource
-     *
-     * @return Psr\Http\Message\ResponseInterface
+     * {@inheritdoc}
      */
     public function getResponse(MessageInterface $request, ResourceInterface $resource)
     {
@@ -60,9 +55,12 @@ class ResponseFactory
             $resource->isFresh($time)) && $mod === $modDate)) {
             $response = (new NotModifiedImageResonse($resource, [], $version))
                 ->withHeader('content-type', $resource->getMimeType());
-            //$response = $response->withHeader('last-modified', $headers['last-modified']);
         } else {
             // normal response
+            if ($this->useXsend && !empty($request->getHeaderLine('x-sendfile-type'))) {
+                $headers = $this->getXsendfileHeaders($resource, $headers);
+            }
+
             $response = new ImageResponse($resource, $headers, $version);
         }
 
@@ -102,5 +100,22 @@ class ResponseFactory
             'last-modified' => $lastMod->format('D, d M Y H:i:s').' GMT',
             'etag' => $resourceEtag
         ];
+    }
+
+    /**
+     * getXsendfileHeaders
+     *
+     * @param ResourceInterface $resource
+     * @param array $originalHeaders
+     *
+     * @return array
+     */
+    private function getXsendfileHeaders(ResourceInterface $resource, array $originalHeaders = [])
+    {
+        return array_merge($originalHeaders, [
+            'content-disposition' => sprintf('inline; filename="%s"', basename($file = $resource->getPath())),
+            'content-lenght' => filesize($file),
+            'x-sendfile' => $file
+        ]);
     }
 }

@@ -98,6 +98,10 @@ class ImageResponse implements ResponseInterface
      */
     public function getBody()
     {
+        if ($this->usesXSendFile()) {
+            return null;
+        }
+
         return $this->getImageStream();
     }
 
@@ -217,6 +221,7 @@ class ImageResponse implements ResponseInterface
 
         $response->image = null;
         $response->stream = $body;
+        $response->headers = $this->removeXsendfileHeaders($this->headers);
 
         return $response;
     }
@@ -268,6 +273,31 @@ class ImageResponse implements ResponseInterface
     }
 
     /**
+     * usesXSendFile
+     *
+     * @return bool
+     */
+    private function usesXSendFile()
+    {
+        return isset($this->headers['x-sendfile']) && isset($this->headers['content-lenght']);
+    }
+
+    /**
+     * removeXsendfileHeaders
+     *
+     * @param array $headers
+     *
+     * @return array
+     */
+    private function removeXsendfileHeaders(array $headers)
+    {
+        $filter = ['x-sendfile', 'content-disposition'];
+        return array_filter($headers, function ($key) use ($filter) {
+            return !in_array($key, $filter);
+        }, ARRAY_FILTER_USE_KEY);
+    }
+
+    /**
      * filterHeaders
      *
      * @param array $headers
@@ -279,13 +309,26 @@ class ImageResponse implements ResponseInterface
         return array_filter(array_change_key_case($headers), [$this, 'isAllowedHeader'], ARRAY_FILTER_USE_KEY);
     }
 
+    /**
+     * getHeaderValue
+     *
+     * @param mixed $value
+     *
+     * @return array
+     */
     private function getHeaderValue($value)
     {
         return is_string($value) ? (array)$value : (is_array($value) ? $value : []);
     }
 
+    /**
+     * getImageStream
+     *
+     * @return Psr\Http\Message\StreamInterface
+     */
     private function getImageStream()
     {
-        return null !== $this->stream ? $this->stream : $this->stream = new ImageStream($this->image);
+        return null !== $this->stream ? $this->stream :
+            (null !== $this->image ? $this->stream = new ImageStream($this->image) : null);
     }
 }
