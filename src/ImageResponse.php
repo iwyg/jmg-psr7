@@ -13,8 +13,7 @@ namespace Thapp\Jmg\Http\Psr7;
 
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
-use Thapp\Jmg\Resource\ResourceInterface;
-use Thapp\Jmg\Resource\CachedResourceInterface;
+use Thapp\Jmg\Resource\ImageResourceInterface as ResourceInterface;
 
 /**
  * @class ImageResponse

@@ -13,8 +13,8 @@ namespace Thapp\Jmg\Http\Psr7;
 
 use DateTime;
 use Psr\Http\Message\MessageInterface;
-use Thapp\Jmg\Resource\ResourceInterface;
 use Thapp\Jmg\Resource\CachedResourceInterface;
+use Thapp\Jmg\Resource\ImageResourceInterface as ImageResource;
 
 /**
  * @class ResponseFactory
@@ -41,7 +41,7 @@ class ResponseFactory implements ImageResponseFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getResponse(MessageInterface $request, ResourceInterface $resource)
+    public function getResponse(MessageInterface $request, ImageResource $resource)
     {
         $version = $request->getProtocolVersion();
         $etag    = $request->getHeaderLine('if-none-match');
@@ -71,11 +71,11 @@ class ResponseFactory implements ImageResponseFactoryInterface
      * getModTimes
      *
      * @param MessageInterface $request
-     * @param ResourceInterface $resource
+     * @param ImageResource $resource
      *
      * @return array
      */
-    private function getModTimes(MessageInterface $request, ResourceInterface $resource)
+    private function getModTimes(MessageInterface $request, ImageResource $resource)
     {
         $time = time();
         return [
@@ -105,12 +105,12 @@ class ResponseFactory implements ImageResponseFactoryInterface
     /**
      * getXsendfileHeaders
      *
-     * @param ResourceInterface $resource
+     * @param ImageResource $resource
      * @param array $originalHeaders
      *
      * @return array
      */
-    private function getXsendfileHeaders(ResourceInterface $resource, array $originalHeaders = [])
+    private function getXsendfileHeaders(ImageResource $resource, array $originalHeaders = [])
     {
         return array_merge($originalHeaders, [
             'content-disposition' => sprintf('inline; filename="%s"', basename($file = $resource->getPath())),

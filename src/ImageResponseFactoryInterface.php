@@ -12,7 +12,7 @@
 namespace Thapp\Jmg\Http\Psr7;
 
 use Psr\Http\Message\MessageInterface;
-use Thapp\Jmg\Resource\ResourceInterface;
+use Thapp\Jmg\Resource\ImageResourceInterface;
 
 /**
  * @interface ImageResponseFactoryInterface
@@ -31,5 +31,5 @@ interface ImageResponseFactoryInterface
      *
      * @return Psr\Http\Message\ResponseInterface
      */
-    public function getResponse(MessageInterface $request, ResourceInterface $resource);
+    public function getResponse(MessageInterface $request, ImageResourceInterface $resource);
 }
