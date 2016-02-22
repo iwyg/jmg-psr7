@@ -279,7 +279,9 @@ class ImageResponse implements ResponseInterface
      */
     private function usesXSendFile()
     {
-        return isset($this->headers['x-sendfile']) && isset($this->headers['content-lenght']);
+        return isset($this->headers['x-sendfile']) &&
+            isset($this->headers['content-lenght']) &&
+            isset($this->headers['content-disposition']);
     }
 
     /**
