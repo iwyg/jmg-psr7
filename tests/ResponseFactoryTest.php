@@ -112,7 +112,7 @@ class ResponseFactoryTest extends \PHPUnit_Framework_TestCase
 
     private function mockImageResource()
     {
-        return $this->getMockbuilder('Thapp\Jmg\Resource\ResourceInterface')
+        return $this->getMockbuilder('Thapp\Jmg\Resource\ImageResourceInterface')
             ->disableOriginalConstructor()->getMock();
     }
 

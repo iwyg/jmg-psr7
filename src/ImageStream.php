@@ -206,7 +206,6 @@ class ImageStream implements StreamInterface
 
             $resource = fopen($image->getPath(), 'r');
             restore_error_handler();
-
         } else {
             //$resource = fopen('php://memory', 'r+');
             $resource = fopen('php://temp', 'wb+');
