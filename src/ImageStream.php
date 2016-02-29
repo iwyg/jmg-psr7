@@ -13,6 +13,7 @@ namespace Thapp\Jmg\Http\Psr7;
 
 use Psr\Http\Message\StreamInterface;
 use Thapp\Jmg\Resource\ImageResourceInterface;
+use InvalidArgumentException;
 
 /**
  * @class ImageStream
@@ -57,7 +58,7 @@ class ImageStream implements StreamInterface
         $resource = $this->resource;
         $this->resource = null;
 
-        return $this->resource;
+        return $resource;
     }
 
     /**
@@ -200,21 +201,20 @@ class ImageStream implements StreamInterface
         $error = null;
 
         if ($image->isLocal()) {
-            set_error_handler(function ($e) use (&$error) {
-                $error = $e;
+            set_error_handler(function ($e, $msg) use (&$error) {
+                $error = $msg;
             }, E_WARNING);
 
             $resource = fopen($image->getPath(), 'r');
             restore_error_handler();
         } else {
-            //$resource = fopen('php://memory', 'r+');
             $resource = fopen('php://temp', 'wb+');
             fwrite($resource, $image->getContents());
             rewind($resource);
         }
 
         if (null !== $error) {
-            throw new \InvalidArgumentException($e);
+            throw new InvalidArgumentException($error);
         }
 
         return $this->resource = $resource;

@@ -187,7 +187,7 @@ class ImageResponse implements ResponseInterface
         if ($this->isAllowedHeader($name = strtolower($name))) {
             $value = $this->getHeaderValue($value);
             $header = $this->getHeader($name);
-            $response->headers[$name] = $header + $value;
+            $response->headers[$name] = array_merge($header, $value);
         }
 
         return $response;
@@ -319,7 +319,7 @@ class ImageResponse implements ResponseInterface
      */
     private function getHeaderValue($value)
     {
-        return is_string($value) ? (array)$value : (is_array($value) ? $value : []);
+        return is_scalar($value) ? (array)$value : (is_array($value) ? $value : []);
     }
 
     /**
