@@ -11,8 +11,7 @@
 
 namespace Thapp\Jmg\Http\Psr7;
 
-use Thapp\Jmg\Parameters;
-use Thapp\Jmg\FilterExpression;
+use Thapp\Jmg\ParamGroup;
 use Thapp\Jmg\Exception\InvalidSignatureException;
 use Thapp\Jmg\Http\UrlSigner as BaseSigner;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -29,7 +28,7 @@ class UrlSigner extends BaseSigner implements UrlSignerInterface
     /**
      * {@inheritdoc}
      */
-    public function validateRequest(Request $request, Parameters $params, FilterExpression $filters = null)
+    public function validateRequest(Request $request, ParamGroup $params)
     {
         $key   = $this->getQParamKey();
         $query = $request->getQueryParams();
@@ -38,7 +37,7 @@ class UrlSigner extends BaseSigner implements UrlSignerInterface
             throw InvalidSignatureException::missingSignature();
         }
 
-        if (0 !== strcmp($query[$key], $this->createSignature($request->getUri()->getPath(), $params, $filters))) {
+        if (0 !== strcmp($query[$key], $this->createSignature($request->getUri()->getPath(), $params))) {
             throw InvalidSignatureException::invalidSignature();
         }
 

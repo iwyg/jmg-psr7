@@ -11,8 +11,7 @@
 
 namespace Thapp\Jmg\Http\Psr7;
 
-use Thapp\Jmg\Parameters;
-use Thapp\Jmg\FilterExpression;
+use Thapp\Jmg\ParamGroup;
 use Thapp\Jmg\Http\HttpSignerInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -34,5 +33,5 @@ interface UrlSignerInterface extends HttpSignerInterface
      *
      * @return boolean
      */
-    public function validateRequest(Request $request, Parameters $params, FilterExpression $filters = null);
+    public function validateRequest(Request $request, ParamGroup $params);
 }

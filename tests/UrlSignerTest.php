@@ -14,6 +14,7 @@ namespace Thapp\Jmg\Tests\Http;
 use Thapp\Jmg\Http\Psr7\UrlSigner;
 use Thapp\Jmg\Parameters;
 use Thapp\Jmg\FilterExpression;
+use Thapp\Jmg\ParamGroup;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Uri;
@@ -37,11 +38,10 @@ class UrlSignerTest extends \PHPUnit_Framework_TestCase
     /** @test */
     public function itShouldValidatePsrRequest()
     {
-        $params = Parameters::fromString('2/100/100/5');
-        $filters = new FilterExpression('circle;o=12;c=#f00');
+        $params = ParamGroup::fromString('2/100/100/5/filter:circle;o=12;c=#f00');
 
         $signer = new UrlSigner('secretkey', 'token');
-        $signed = $signer->sign($path = '/images/image.jpg', $params, $filters);
+        $signed = $signer->sign($path = '/images/image.jpg', $params);
 
         $qst = parse_url($signed, PHP_URL_QUERY);
         parse_str($qst, $query);
@@ -52,7 +52,7 @@ class UrlSignerTest extends \PHPUnit_Framework_TestCase
         $uri->method('getPath')->willReturn($path);
 
         try {
-            $this->assertTrue($signer->validateRequest($request, $params, $filters));
+            $this->assertTrue($signer->validateRequest($request, $params));
         } catch (InvalidSignatureException $e) {
             $this->fail($e->getMessage());
         }
@@ -66,7 +66,7 @@ class UrlSignerTest extends \PHPUnit_Framework_TestCase
         $request = $this->mockRequest();
         $request->method('getQueryParams')->willReturn([]);
 
-        $params = Parameters::fromString('2/100/100/5');
+        $params = ParamGroup::fromString('2/100/100/5');
 
         try {
             $signer->validateRequest($request, $params);
@@ -88,7 +88,7 @@ class UrlSignerTest extends \PHPUnit_Framework_TestCase
 
         $uri->method('getPath')->willreturn($path);
 
-        $params = Parameters::fromString('2/100/100/5');
+        $params = ParamGroup::fromString('2/100/100/5');
 
         try {
             $signer->validateRequest($request, $params);
