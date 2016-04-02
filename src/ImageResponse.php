@@ -45,7 +45,7 @@ class ImageResponse implements ResponseInterface
     /** @var ImageStream */
     protected static $allowedHeaders = [
         'accept', 'accept-rages', 'date', 'keep-alive', 'connection', 'content-transfer-encoding',
-        'etag', 'content-encoding', 'content-length', 'content-type', 'last-modified'
+        'etag', 'content-encoding', 'content-length', 'content-type', 'last-modified', 'cache-control'
     ];
 
     /**
@@ -260,6 +260,7 @@ class ImageResponse implements ResponseInterface
             'content-type'              => $this->image->getMimeType(),
             'accept-ranges'             => 'bytes',
             'keep-alive'                => 'timeout=15, max=200',
+            'cache-control'             => 'public, must-revalidate',
             'connection'                => 'Keep-Alive',
         ]);
     }
