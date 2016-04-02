@@ -54,7 +54,8 @@ class ResponseFactory implements ImageResponseFactoryInterface
             (($resource instanceof CachedResourceInterface &&
             $resource->isFresh($time)) && $mod === $modDate)) {
             $response = (new NotModifiedImageResonse($resource, [], $version))
-                ->withHeader('content-type', $resource->getMimeType());
+                ->withHeader('content-type', $resource->getMimeType())
+                ->withHeader('cache-control', 'public');
         } else {
             // normal response
             if ($this->useXsend && !empty($request->getHeaderLine('x-sendfile-type'))) {

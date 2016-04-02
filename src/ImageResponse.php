@@ -260,7 +260,6 @@ class ImageResponse implements ResponseInterface
             'content-type'              => $this->image->getMimeType(),
             'accept-ranges'             => 'bytes',
             'keep-alive'                => 'timeout=15, max=200',
-            'cache-control'             => 'public, must-revalidate',
             'connection'                => 'Keep-Alive',
         ]);
     }
